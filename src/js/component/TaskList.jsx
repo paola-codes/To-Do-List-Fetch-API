@@ -1,8 +1,9 @@
 import React from "react";
+import { getServerTodos, updateServerTodos } from "../../../api";
 
 export const TaskList = () => {
 	const [task, setTask] = React.useState("");
-	const [list, setList] = React.useState([]);
+	const [list, setList] = React.useState(null);
 	const [isHovering, setisHovering] = React.useState(-1);
 
 	const handleInput = e => {
@@ -16,6 +17,33 @@ export const TaskList = () => {
 		let filterList = list.filter((taskToRemove, i) => i != indexToRemove);
 		setList(filterList);
 	};
+
+	React.useEffect(() => {
+		const fn = async () => {
+			const todos = await getServerTodos();
+			setList(
+				todos.map(item => {
+					return item.label;
+				})
+			);
+		};
+		fn();
+	}, []);
+
+	React.useEffect(() => {
+		const fn2 = async () => {
+			await updateServerTodos(
+				list.map(item => ({ label: item, done: false }))
+			);
+		};
+		if (list !== null) {
+			fn2();
+		}
+	}, [list]);
+
+	if (list === null) {
+		return null;
+	}
 
 	return (
 		<div className="d-flex flex-column justify-content-center shadow mb-5 bg-body m-0 p-0">
