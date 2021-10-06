@@ -2,7 +2,7 @@ export const getServerTodos = async () => {
 	const response = await fetch(
 		"https://assets.breatheco.de/apis/fake/todos/user/paola9896"
 	);
-	if (response.status === 200) {
+	if (response.status == 200) {
 		const body = await response.json();
 		return body;
 	} else {

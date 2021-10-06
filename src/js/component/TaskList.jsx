@@ -8,18 +8,18 @@ export const TaskList = () => {
 
 	const handleInput = e => {
 		if (e.keyCode == 13) {
-			setTask(e.target.value);
-			setList([...list, task]);
+			setList([...list, task]); /*why passing ...list if list is supposed to be empty, only task is needed*/
 			setTask("");
 		}
 	};
 	const deleteToDo = indexToRemove => {
 		let filterList = list.filter((taskToRemove, i) => i != indexToRemove);
-		setList(filterList);
+		setList(filterList); /*list of lis whose index does not match the index selected to be removed*/
 	};
 
+	/*Why do I need this two use effects*/
 	React.useEffect(() => {
-		const fn = async () => {
+		const func = async () => {
 			const todos = await getServerTodos();
 			setList(
 				todos.map(item => {
@@ -27,21 +27,21 @@ export const TaskList = () => {
 				})
 			);
 		};
-		fn();
+		func();
 	}, []);
 
 	React.useEffect(() => {
-		const fn2 = async () => {
+		const func2 = async () => {
 			await updateServerTodos(
 				list.map(item => ({ label: item, done: false }))
 			);
 		};
 		if (list !== null) {
-			fn2();
+			func2();
 		}
 	}, [list]);
 
-	if (list === null) {
+	if (list == null) {
 		return null;
 	}
 
@@ -52,7 +52,7 @@ export const TaskList = () => {
 					type="text"
 					placeholder="What needs to be done?"
 					className="form-control px-5 py-2 fw-light fs-5"
-					value={task}
+					value={task} /*why here before i have entered an input*/
 					onChange={event => setTask(event.target.value)}
 					onKeyDown={e => handleInput(e)}
 				/>
